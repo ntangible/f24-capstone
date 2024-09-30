@@ -1,22 +1,21 @@
+import './styles.css';
+
 // scripts.js
+import { initializeApp } from "firebase/app";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, connectAuthEmulator } from "firebase/auth";
 
 // Firebase configuration
-const firebaseConfig = {
+const firebaseApp = initializeApp({
     apiKey: "AIzaSyDOkCPrXHcIkhCrBSOvsRofrUTeAfSfP5E",
     authDomain: "centsible-50947.firebaseapp.com",
     projectId: "centsible-50947",
     storageBucket: "centsible-50947.appspot.com",
     messagingSenderId: "152703971919",
     appId: "1:152703971919:web:658f3cd181eccde73ab03a"
-};
-// Initialize Firebase
-firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
+});
 
-// Use Firebase Auth emulator if running on localhost
-if (window.location.hostname === "localhost" ||  window.location.hostname === "127.0.0.1") {
-    auth.useEmulator("http://localhost:9099");
-}
+const auth = getAuth(firebaseApp);
+connectAuthEmulator(auth, "http://localhost:9099");
 
 // Form elements
 const loginForm = document.getElementById('login-form');
@@ -35,7 +34,7 @@ document.getElementById('register-button').addEventListener('click', () => {
     const confirmPassword = document.getElementById('confirm-password').value;
 
     if (password === confirmPassword) {
-        auth.createUserWithEmailAndPassword(email, password)
+        createUserWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
                 alert('Account created successfully');
                 loginForm.style.display = 'block';
@@ -54,7 +53,7 @@ document.getElementById('login-button').addEventListener('click', () => {
     const email = document.getElementById('login-email').value;
     const password = document.getElementById('login-password').value;
 
-    auth.signInWithEmailAndPassword(email, password)
+    signInWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
             alert('Logged in successfully');
             // Redirect to home/dashboard page if needed
