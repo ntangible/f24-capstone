@@ -64,6 +64,7 @@ document.getElementById('login-button').addEventListener('click', () => {
         });
 });
 
+// Listen for User login states
 const listenAuthState = async() => {
     onAuthStateChanged(auth, user => {
         if (user) {
@@ -83,6 +84,7 @@ const listenAuthState = async() => {
     })
 };
 
+// Logout button event listener
 document.getElementById('logout-button').addEventListener('click', async () => {
     await signOut(auth);
     alert(`You have signed out`);
