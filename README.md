@@ -22,3 +22,16 @@ Every purchase can be categorized and displayed in a pie chart, so that you can 
 
 ## Learning Mode
 Our unfamiliar users will be able to take full advantage of this mode to learn key financial terms and strategies to deepen their knowledge and become more comfortable.
+
+## How to run locally with emulator
+1. Clone the repository
+2. Navigate into the root folder of the project
+3. Install the dependencies
+```bash
+$ npm install
+```
+4. Run the Firebase Emulator to host your app locally
+```bash
+$ firebase emulator:start
+```
+5. Open the links shown in the console log to access corresponding features
