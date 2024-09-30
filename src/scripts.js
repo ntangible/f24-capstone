@@ -2,7 +2,7 @@ import './styles.css';
 
 // scripts.js
 import { initializeApp } from "firebase/app";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, connectAuthEmulator } from "firebase/auth";
+import { signOut, getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, connectAuthEmulator, onAuthStateChanged } from "firebase/auth";
 
 // Firebase configuration
 const firebaseApp = initializeApp({
@@ -20,6 +20,7 @@ connectAuthEmulator(auth, "http://localhost:9099");
 // Form elements
 const loginForm = document.getElementById('login-form');
 const registerForm = document.getElementById('register-form');
+const loggedIn = document.getElementById('logged-in');
 
 // Toggle from login to registration form
 document.getElementById('show-register').addEventListener('click', () => {
@@ -62,3 +63,29 @@ document.getElementById('login-button').addEventListener('click', () => {
             alert(error.message);
         });
 });
+
+const listenAuthState = async() => {
+    onAuthStateChanged(auth, user => {
+        if (user) {
+            console.log(user);
+            loginForm.style.display = 'none';
+            registerForm.style.display = 'none';
+            loggedIn.style.display = 'block';
+            document.getElementById('lblmsg').innerHTML = `
+            You have signed in as ${user.email} at ${user.metadata.lastSignInTime}
+            `
+        }
+        else {
+            loginForm.style.display = 'block';
+            registerForm.style.display = 'none';
+            loggedIn.style.display = 'none';
+        }
+    })
+};
+
+document.getElementById('logout-button').addEventListener('click', async () => {
+    await signOut(auth);
+    alert(`You have signed out`);
+});
+
+listenAuthState();
