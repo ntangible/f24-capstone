@@ -32,6 +32,6 @@ $ npm install
 ```
 4. Run the Firebase Emulator to host your app locally
 ```bash
-$ firebase emulator:start
+$ npm start
 ```
 5. Open the links shown in the console log to access corresponding features
