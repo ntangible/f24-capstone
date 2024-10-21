@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <!-- Link the separate stylesheet for dashboard -->
+    <link rel="stylesheet" href="styles/dashboard.css">
+</head>
+<body>
+
+    <div class="settings-button">
+        <a href="user-settings.html" class="settings-link">⚙️</a>
+    </div>
+
+    <!-- Sidebar Section -->
+    <div class="sidebar">
+        <ul>
+            <li><a href="dashboard.html" class="active">Dashboard</a></li>
+            <li><a href="purchases.html">Purchases</a></li>
+            <li><a href="goals.html">Goals</a></li>
+            <li><a href="spending.html">Spending</a></li>
+            <li><a href="budget.html">Budget</a></li>
+            <li><a href="offline.html">Offline</a></li>
+        </ul>
+    </div>
+
+    <!-- Main Content Section -->
+    <div class="main-content">
+        <h1 class="heading">Dashboard</h1>
+        <div class="cards">
+            <!-- Placeholder for cards content -->
+            <div class="card card-purchase">
+                <p><a href="add-purchase.html">Add a purchase</a></p> <!-- Link to add-purchase.html -->
+                <span class="arrow">→</span>
+                <p class="card-detail">Last spent: <br>$350 at Costco</p>
+            </div>
+            <div class="card card-goals">
+                <p><a href="goals.html">View your goals</a></p>
+                <span class="arrow">→</span>
+                <p class="card-detail">$200 for New Phone<br>$1350 for Macbook<br>$5700 for Washer<br>and 3 more.</p>
+            </div>
+            <div class="card card-spending">
+                <p><a href="spending.html">Track your spending</a></p>
+                <span class="arrow">→</span>
+                <!-- Placeholder for spending chart -->
+                <div class="spending-chart-placeholder"></div>
+            </div>
+            <div class="card card-paycheck">
+                <p>Add a paycheck</p>
+                <span class="arrow">→</span>
+                <p class="card-detail">Last added:<br>$3500 on 9/30/24</p>
+            </div>
+            <div class="card card-savings">
+                <p>You have made</p>
+                <h3>$10,000</h3>
+                <p>since joining Centsible!</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

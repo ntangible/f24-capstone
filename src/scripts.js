@@ -83,11 +83,57 @@ const listenAuthState = async() => {
         }
     })
 };
+// scripts.js
+
+document.addEventListener('DOMContentLoaded', () => {
+    // Add event listener for 'Add a Purchase' card
+    const addPurchaseCard = document.querySelector('.card-purchase');
+    if (addPurchaseCard) {
+        addPurchaseCard.addEventListener('click', () => {
+            window.location.href = 'add-purchase.html';
+        });
+    } else {
+        console.log('Purchase card not working.')
+    }
+
+    // Add purchase form submission handling
+    const purchaseForm = document.getElementById('purchase-form');
+    if (purchaseForm) {
+        purchaseForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const item = document.getElementById('purchase-item').value;
+            const amount = document.getElementById('purchase-amount').value;
+            const date = document.getElementById('purchase-date').value;
+
+            // Add code to save the purchase information, perhaps via Firebase or local storage
+            console.log(`Purchase Added: ${item}, Amount: ${amount}, Date: ${date}`);
+            alert('Purchase Added Successfully!');
+        });
+    }
+});
 
 // Logout button event listener
 document.getElementById('logout-button').addEventListener('click', async () => {
     await signOut(auth);
     alert(`You have signed out`);
 });
+
+
+// Navigate to dashboard.html upon successful login
+document.getElementById('login-button').addEventListener('click', () => {
+    const email = document.getElementById('login-email').value;
+    const password = document.getElementById('login-password').value;
+
+    signInWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+            alert('Logged in successfully');
+            window.location.href = 'dashboard.html';  // Redirect to the blank dashboard page
+        })
+        .catch((error) => {
+            alert(error.message);
+        });
+});
+
+
 
 listenAuthState();

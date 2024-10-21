@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Purchase</title>
+    <link rel="stylesheet" href="styles/add-purchase.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Add a New Purchase</h1>
+        <form id="purchase-form">
+            <input type="text" id="purchase-item" placeholder="Item Name" required>
+            <input type="number" id="purchase-amount" placeholder="Amount" required>
+            <input type="text" id="purchase-item" placeholder="Merchant" required>
+            <input type="text" id="purchase-item" placeholder="Category" required>
+            <input type="date" id="purchase-date" required>
+            <button type="submit" id="add-purchase-button">Add Purchase</button>
+        </form>
+
+        <!-- Add an anchor for users to manually navigate back -->
+        <div id="back-to-dashboard" style="display: none;">
+            <p>Goal added successfully! <a href="dashboard.html">Return to Dashboard</a></p>
+        </div>
+
+    </div>
+
+    <script>
+        document.getElementById('purchase-form').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent default form sub. behavior
+
+            // Add purchase simulation
+            const purchaseItem = document.getElementById('purchase-item').value;
+            const purchaseAmount = document.getElementById('purchase-amount').value; 
+
+            // Go back to dashboard
+            document.getElementById('purchase-form').style.display = 'none'.value;
+            document.getElementById('back-to-dashboard').style.display = 'block';
+        });
+    </script>
+</body>
+</html>

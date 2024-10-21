@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Purchase</title>
+    <link rel="stylesheet" href="styles/user-settings.css">
+</head>
+<body>
+    <div class="container">
+        <h1>User Profile Settings</h1>
+        <form id="settings-form">
+            <input type="text" id="name" placeholder="Name">
+            <input type="password" id="password" placeholder="Password">
+            <input type="date" id="date_birth">
+            <button type="submit" id="update_user">Update Profile</button>
+        </form>
+
+        <div id = 'back-to-dashboard' style="display: none;">
+            <p>Settings updated <a href="dashboard.html">Return to Dashboard</a></p>
+        </div>
+
+    </div>
+    
+    <script>
+        document.getElementById('settings-form').addEventListener('submit', function(event){
+            event.preventDefault();
+
+            
+        document.getElementById('settings-form').style.display = 'none'.value;
+        document.getElementById('back-to-dashboard').style.display = 'block';
+    });
+    </script>
+</body>
+</html>
