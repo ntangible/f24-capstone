@@ -1,0 +1,17 @@
+/* src/styles/App.css */
+body {
+    background-color: #0b0c10;
+    font-family: Arial, sans-serif;
+    color: #66fcf1;
+}
+
+.container {
+    margin: 0 auto;
+    padding: 50px;
+    max-width: 400px;
+    background: #1f2833;
+    border-radius: 10px;
+}
+button:hover {
+    background-color: #66fcf1;
+}
