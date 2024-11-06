@@ -1,0 +1,28 @@
+/* src/styles/Dashboard.css */
+
+/* Dashboard.css */
+
+
+.main-content {
+    flex-grow: 1;
+    padding: 20px;
+}
+.dashboard-container{
+    display: flex;
+    background-color: #080d1b;
+    height: 100vh
+
+}
+
+.heading {
+    color: #66fcf1;
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
