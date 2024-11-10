@@ -7,6 +7,7 @@ import AddPurchase from './pages/AddPurchase';
 import UserProfile from './pages/UserProfile';
 import Goals from './pages/Goals';
 import AddPaycheck from './pages/AddPaycheck';
+import Spending from './pages/Spending';
 
 function App() {
     return (
@@ -18,6 +19,8 @@ function App() {
                 <Route path='/add-purchase' element={<AddPurchase />} />
                 <Route path='/user-profile' element={<UserProfile />} />
                 <Route path='/goals' element={<Goals />} />
+                <Route path='/add-paycheck' element={<AddPaycheck />} />
+                <Route path='/spending' element={<Spending />} />
             </Routes>
         </Router>
     );
