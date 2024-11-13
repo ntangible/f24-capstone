@@ -1,0 +1,76 @@
+/* Paycheck.css */
+
+.paycheck-page {
+    display: flex;
+    background-color: #1a1c2c;
+}
+
+.paycheck-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+}
+
+.paycheck-heading {
+    font-size: 24px;
+    font-weight: bold;
+    color: #4bb9b9;
+    margin-bottom: 20px;
+}
+
+.paycheck-card {
+    width: 320px;
+    padding: 20px;
+    background-color: #f1ede3;
+    border-radius: 8px;
+    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.2);
+    text-align: left;
+    color: #003c40;
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.add-card {
+    background-color: #4bb9b9;
+    color: white;
+    cursor: pointer;
+    transition: transform 0.2s;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 320px;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+.add-card:hover {
+    transform: translateY(-5px);
+}
+
+.separator {
+    width: 320px;
+    height: 1px;
+    background-color: #c5c6c7; /* Light gray separator line */
+    margin: 20px 0;
+}
+
+.paycheck-card-title {
+    font-size: 18px;
+    font-weight: bold;
+    margin: 0;
+}
+
+.paycheck-details {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    color: #4bb9b9;
+}
+
+.paycheck-arrow {
+    font-size: 24px;
+}
