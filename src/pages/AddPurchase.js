@@ -2,19 +2,13 @@
 import { useState } from "react";
 import { useFirestore } from "../contexts/FirestoreContext";
 import { useAuth } from "../contexts/AuthContext";
-import Sidebar from "../components/Sidebar";
-import AppBarComponent from "../components/Appbar";
 import { Box } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
 const AddPurchase = () => {
   const navigate = useNavigate();
-  const [isDrawerOpen, setDrawerOpen] = useState(false);
-  const toggleDrawer = () => {
-    setDrawerOpen(!isDrawerOpen);
-  };
   const { currentUser } = useAuth();
-  const { addExpenses } = useFirestore();
+  const { addUncatSpending } = useFirestore();
 
   const [formData, setFormData] = useState({
     name: "",
@@ -44,7 +38,7 @@ const AddPurchase = () => {
         date: formData.date,
       };
 
-      await addExpenses(currentUser.uid, expenseData, formData.type);
+      await addUncatSpending(currentUser.uid, expenseData);
 
       // Clear form
       setFormData({
@@ -65,8 +59,6 @@ const AddPurchase = () => {
 
   return (
     <Box>
-      <AppBarComponent onMenuClick={toggleDrawer} />
-      <Sidebar open={isDrawerOpen} onClose={toggleDrawer} />
       <div style={{ display: "flex" }}>
         <div
           style={{

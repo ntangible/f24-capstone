@@ -45,10 +45,10 @@ npm run build
 - [x] Login & Register Page
 - [x] Dashboard Page
 - [x] Add Purchase Page
-- [ ] View Purchases Page
+- [x] View Purchases Page (View only, no edits)
 - [x] Add Goal Page
-- [ ] View Goals Page
-- [ ] Track Spendings Page
+- [x] View Goals Page (View only, no edits)
+- [x] Track Spendings Page (View only, no edits)
 - [x] Add Paycheck Page
 - [ ] View Paycheck/Income Page
 - [ ] Updates on how much money user has made since registering

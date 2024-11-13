@@ -2,17 +2,11 @@
 import { useState } from "react";
 import { Box } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import Sidebar from "../components/Sidebar";
-import AppBarComponent from "../components/Appbar";
 import { useFirestore } from "../contexts/FirestoreContext";
 import { useAuth } from "../contexts/AuthContext";
 
 const AddPaycheck = () => {
   const navigate = useNavigate();
-  const [isDrawerOpen, setDrawerOpen] = useState(false);
-  const toggleDrawer = () => {
-    setDrawerOpen(!isDrawerOpen);
-  };
   const { currentUser } = useAuth();
   const { addIncome } = useFirestore();
 
@@ -35,7 +29,7 @@ const AddPaycheck = () => {
     e.preventDefault();
     try {
       const incomeData = {
-        name: formData.source,
+        source: formData.source,
         amount: Number(formData.amount),
         date: formData.date,
       };
@@ -57,10 +51,7 @@ const AddPaycheck = () => {
 
   return (
     <Box>
-      <AppBarComponent onMenuClick={toggleDrawer} />
-      <Sidebar open={isDrawerOpen} onClose={toggleDrawer} />
       <div style={{ display: "flex" }}>
-        <Sidebar />
         <div
           style={{
             flex: 1,

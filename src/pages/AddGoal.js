@@ -2,17 +2,11 @@
 import { useState } from "react";
 import { useFirestore } from "../contexts/FirestoreContext";
 import { useAuth } from "../contexts/AuthContext";
-import Sidebar from "../components/Sidebar";
-import AppBarComponent from "../components/Appbar";
 import { Box } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
 const AddGoal = () => {
   const navigate = useNavigate();
-  const [isDrawerOpen, setDrawerOpen] = useState(false);
-  const toggleDrawer = () => {
-    setDrawerOpen(!isDrawerOpen);
-  };
   const { currentUser } = useAuth();
   const { addUserGoal } = useFirestore();
 
@@ -21,7 +15,7 @@ const AddGoal = () => {
     name: "",
     amount: "",
     term: "long",
-    priority: "",
+    priority: "2",
   });
 
   const handleInputChange = (e) => {
@@ -42,13 +36,15 @@ const AddGoal = () => {
         priority: formData.priority,
       };
 
+      console.log(goalData);
+
       await addUserGoal(currentUser.uid, goalData);
 
       setFormData({
         name: "",
         amount: "",
         term: "long",
-        priority: "",
+        priority: "2",
       });
       navigate(-1);
     } catch (e) {
@@ -58,8 +54,6 @@ const AddGoal = () => {
 
   return (
     <Box>
-      <AppBarComponent onMenuClick={toggleDrawer} />
-      <Sidebar open={isDrawerOpen} onClose={toggleDrawer} />
       <div style={{ display: "flex" }}>
         <div
           style={{

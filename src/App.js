@@ -6,16 +6,22 @@ import {
 } from "react-router-dom";
 import { useAuth, AuthProvider } from "./contexts/AuthContext";
 import { FirestoreProvider } from "./contexts/FirestoreContext";
+import Sidebar from "./components/Sidebar";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import UserProfile from "./pages/UserProfile";
 import AddPurchase from "./pages/AddPurchase";
 import AddGoal from "./pages/AddGoal";
 import AddPaycheck from "./pages/AddPaycheck";
+import Spending from "./pages/Spending";
+import Goals from "./pages/Goals";
 
 const ProtectedRoute = ({ children }) => {
   const { currentUser } = useAuth();
-  return currentUser ? children : <Navigate to="/" replace />;
+
+  if (!currentUser) return currentUser ? children : <Navigate to="/" replace />;
+
+  return <Sidebar>{children}</Sidebar>;
 };
 
 function App() {
@@ -29,8 +35,7 @@ function App() {
               path="/dashboard"
               element={
                 <ProtectedRoute>
-                  {" "}
-                  <Dashboard />{" "}
+                  <Dashboard />
                 </ProtectedRoute>
               }
             />
@@ -38,17 +43,23 @@ function App() {
               path="/profile"
               element={
                 <ProtectedRoute>
-                  {" "}
-                  <UserProfile />{" "}
+                  <UserProfile />
                 </ProtectedRoute>
               }
             />
             <Route
-              path="/purchase"
+              path="/spendings"
               element={
                 <ProtectedRoute>
-                  {" "}
-                  <AddPurchase />{" "}
+                  <Spending />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/add-purchase"
+              element={
+                <ProtectedRoute>
+                  <AddPurchase />
                 </ProtectedRoute>
               }
             />
@@ -56,8 +67,15 @@ function App() {
               path="/goals"
               element={
                 <ProtectedRoute>
-                  {" "}
-                  <AddGoal />{" "}
+                  <Goals />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/add-goal"
+              element={
+                <ProtectedRoute>
+                  <AddGoal />
                 </ProtectedRoute>
               }
             />
@@ -65,11 +83,11 @@ function App() {
               path="/income"
               element={
                 <ProtectedRoute>
-                  {" "}
-                  <AddPaycheck />{" "}
+                  <AddPaycheck />
                 </ProtectedRoute>
               }
             />
+            <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </Router>
       </FirestoreProvider>

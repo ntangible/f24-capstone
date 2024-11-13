@@ -81,6 +81,7 @@ export const FirestoreProvider = ({ children }) => {
    * incomeData = {
    *  source: <Source of income>,
    *  amount: <Amount of income>,
+   *  date: <Date added>,
    *  frequency: <Frequency of income>,
    *  active: <Flag to enable or disable income>,
    * }
@@ -100,16 +101,20 @@ export const FirestoreProvider = ({ children }) => {
   /**
    * Gets income from user document
    * @param {String} id - User ID
+   * @param {*} num - Number of elements to return (default 1, "all" for all)
    * @returns {Promise<Array | null>} - Returns array of objects containing income data
    */
-  const getIncome = async (id) => {
+  const getIncome = async (id, num = 1) => {
     try {
       const docSnap = await getDoc(doc(db, "users", id));
 
       if (docSnap.exists()) {
         if (!docSnap.data().income || docSnap.data().income.length === 0)
           return null;
-        return docSnap.data().income;
+
+        if (num === "all") return docSnap.data().income;
+
+        return docSnap.data().income.slice(0, num);
       } else {
         console.log("No such user document.");
         return null;
@@ -120,6 +125,36 @@ export const FirestoreProvider = ({ children }) => {
     }
   };
 
+  /**
+   * Append expense data to default expense document of user
+   * @param {String} id - User ID
+   * @param {*} expenseData - Expense data object
+   * expenseData = {
+   *  name: <Name of the expense>,
+   *  amount: <Cost of the expense>,
+   *  merchant: <Merchant name>,
+   *  category: <Category of the expense>,
+   *  date: <User set data of purchase>,
+   * }
+   */
+  const addUncatSpending = async (id, expenseData) => {
+    try {
+      await setDoc(
+        doc(db, "users", id, "expenses", "default"),
+        { expenses: arrayUnion(expenseData) },
+        { merge: true }
+      );
+    } catch (e) {
+      console.error("Error adding expense data: ", e);
+      throw e;
+    }
+  };
+
+  /*
+  Categorized spending, unclear on whether to use.
+    Categorizing spending data helps to split data between different docs and
+    avoid max size constraints on a document, but requires more complex handling
+  */
   /**
    * Append expense data to the corresponding expense document of user
    * @param {String} id - User ID
@@ -157,7 +192,32 @@ export const FirestoreProvider = ({ children }) => {
   };
 
   /**
-   * Gets the most recent expense data
+   * Gets expenses from document
+   * @param {String} id - User ID
+   * @param {*} num - Number of expenses to return (default: 1, "all" returns all)
+   * @returns {Promise<Array | null>}
+   */
+  const getUncatExpense = async (id, num = 1) => {
+    try {
+      const document = await getDoc(
+        doc(db, "users", id, "expenses", "default")
+      );
+      if (document.exists()) {
+        const expensesArr = document.data().expenses;
+
+        if (num === "all") return expensesArr;
+
+        return expensesArr.slice(0, num);
+      }
+      return null;
+    } catch (e) {
+      console.error("Error getting expense: ", e);
+      throw e;
+    }
+  };
+
+  /**
+   * Gets the most recent expense data, BROKEN IMPLEMENTATION
    * @param {String} id - User ID
    * @param {String} type - Type of expense ["necessary", "voluntary"]
    * @returns {Promise<Object | null>} - Most recent expense data or null if none found
@@ -252,7 +312,7 @@ export const FirestoreProvider = ({ children }) => {
    * Gets user goals from user doument
    * [Optional] Show highest priority goals first or just by order they are stored
    * @param {String} id - User ID
-   * @param {Number} num - Number of user goals to return (default: 1)
+   * @param {*} num - Number of user goals to return (default: 1, "all" returns all)
    * @returns {Promise<Array | null>}
    */
   const getUserGoals = async (id, num = 1) => {
@@ -262,6 +322,8 @@ export const FirestoreProvider = ({ children }) => {
       if (docSnap.exists()) {
         const userData = docSnap.data();
         if (!userData.goals || userData.goals.length === 0) return null;
+
+        if (num === "all") return userData.goals;
 
         return userData.goals.slice(0, num);
       } else {
@@ -279,7 +341,9 @@ export const FirestoreProvider = ({ children }) => {
     updateUser,
     addIncome,
     getIncome,
+    addUncatSpending,
     addExpenses,
+    getUncatExpense,
     getRecentExpense,
     getUserData,
     addUserGoal,

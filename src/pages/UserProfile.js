@@ -1,16 +1,10 @@
 // src/pages/UserProfile.js
 import { useState } from "react";
-import Sidebar from "../components/Sidebar";
-import AppBarComponent from "../components/Appbar";
 import { useFirestore } from "../contexts/FirestoreContext";
 import { useAuth } from "../contexts/AuthContext";
 import { Box } from "@mui/material";
 
 const UserProfile = () => {
-  const [isDrawerOpen, setDrawerOpen] = useState(false);
-  const toggleDrawer = () => {
-    setDrawerOpen(!isDrawerOpen);
-  };
   const { updateUser } = useFirestore();
   const { currentUser } = useAuth();
   const [name, setName] = useState("");
@@ -37,8 +31,6 @@ const UserProfile = () => {
 
   return (
     <Box>
-      <AppBarComponent onMenuClick={toggleDrawer} />
-      <Sidebar open={isDrawerOpen} onClose={toggleDrawer} />
       <div style={{ display: "flex" }}>
         <div
           style={{
