@@ -1,45 +1,38 @@
-// src/pages/ViewGoals.js
-import React from 'react';
+// src/pages/Goals.js
+import React, { useState } from 'react';
 import Sidebar from '../components/Sidebar';
+import GoalsCard from '../components/GoalsCard';
+import AddGoal from './AddGoal';
+import '../styles/Goals.css';
 
-const ViewGoals = () => {
-    const goals = [
-        { name: "New Phone", saved: "$200", target: "$1000" },
-        { name: "Macbook", saved: "$1350", target: "$2000" },
-        { name: "Washer", saved: "$5700", target: "$6000" },
-        { name: "Vacation", saved: "$500", target: "$3000" },
-    ];
+const Goals = () => {
+    const [goals, setGoals] = useState([]);
+    const [showAddGoal, setShowAddGoal] = useState(false);
 
-    const cardStyle = {
-        backgroundColor: '#FFFFFF',
-        padding: '20px',
-        borderRadius: '10px',
-        textAlign: 'left',
-        fontWeight: 'bold',
-        fontSize: '18px',
-        width: '250px',
-        height: '150px',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
-        margin: '10px',
+    // Function to add a new goal to the list
+    const addGoal = (newGoal) => {
+        setGoals([...goals, newGoal]);
+        setShowAddGoal(false); // Hide the form after adding the goal
     };
 
     return (
-        <div style={{ display: 'flex' }}>
+        <div className="goals-container">
             <Sidebar />
-            <div style={{ flex: 1, padding: '20px', backgroundColor: '#1a1c2c' }}>
-                <h1 style={{ color: '#79c2c2', fontSize: '24px', fontWeight: 'bold', marginBottom: '20px' }}>Your Goals</h1>
-                <div style={{ display: 'flex', flexWrap: 'wrap' }}>
+            <div className="goals-content">
+                <h1 className="goals-title">Your Goals</h1>
+                
+                {/* Show Add Goal button or AddGoal form conditionally */}
+                <div className="add-goal">
+                    {showAddGoal ? (
+                        <AddGoal addGoal={addGoal} />
+                    ) : (
+                        <GoalsCard name={"Add a goal"} onClick={() => setShowAddGoal(true)} />
+                    )}
+                </div>
+                
+                <div className="goals-list">
                     {goals.map((goal, index) => (
-                        <div key={index} style={cardStyle}>
-                            {goal.name}
-                            <div style={{ fontWeight: 'normal', fontSize: '16px', marginTop: '10px' }}>
-                                Saved: {goal.saved}<br />
-                                Target: {goal.target}
-                            </div>
-                        </div>
+                        <GoalsCard key={index} name={goal.name} saved={goal.saved} target={goal.target} />
                     ))}
                 </div>
             </div>
@@ -47,4 +40,4 @@ const ViewGoals = () => {
     );
 };
 
-export default ViewGoals;
+export default Goals;

@@ -13,7 +13,7 @@ const Dashboard = () => {
         },
         {
             title: "View your goals",
-            detail: "$200 for New Phone\n$1350 for Macbook\n$5700 for Washer and 3 more.",
+            detail: "$200 for New Phone,\n$5700 for Washer and 3 more.",
             link: "/goals"
         },
         {
