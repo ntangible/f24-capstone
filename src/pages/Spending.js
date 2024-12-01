@@ -6,14 +6,14 @@ import "../styles/Spending.css";
 
 const Spending = () => {
   const [expenseData, setExpenseData] = useState([]);
-  const { getUncatExpense } = useFirestore();
+  const { getExpenses } = useFirestore();
   const { currentUser } = useAuth();
 
   useEffect(() => {
     const fetchUserExpenses = async () => {
       if (currentUser) {
         try {
-          const expenseArr = await getUncatExpense(currentUser.uid, "all");
+          const expenseArr = await getExpenses(currentUser.uid, 0);
           if (expenseArr) setExpenseData(expenseArr);
         } catch (e) {
           // ADD AN ALERT TOAST
@@ -23,7 +23,7 @@ const Spending = () => {
       }
     };
     fetchUserExpenses();
-  }, [currentUser, getUncatExpense]);
+  }, [currentUser, getExpenses]);
 
   return (
     <div className="spending-container">

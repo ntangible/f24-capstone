@@ -8,7 +8,7 @@ import "../styles/Dashboard.css";
 
 const Dashboard = () => {
   const { currentUser } = useAuth();
-  const { getRecentExpense, getUserGoals, getIncome } = useFirestore();
+  const { getExpenses, getUserGoals, getIncome } = useFirestore();
   const [recentPurchase, setRecentPurchase] = useState(
     "No recent purchases found."
   );
@@ -20,7 +20,7 @@ const Dashboard = () => {
     const fetchRecentExpense = async () => {
       if (currentUser) {
         try {
-          const expense = await getRecentExpense(currentUser.uid, "voluntary");
+          const expense = await getExpenses(currentUser.uid);
           if (expense)
             setRecentPurchase(
               `Last spent: $${expense.amount} for ${expense.name} on ${expense.date}.`
@@ -32,7 +32,7 @@ const Dashboard = () => {
       }
     };
     fetchRecentExpense();
-  }, [currentUser, getRecentExpense]);
+  }, [currentUser, getExpenses]);
 
   // Fetch user goal from database
   useEffect(() => {
@@ -92,8 +92,9 @@ const Dashboard = () => {
       link: "/income",
     },
     {
-      title: "You have made",
-      detail: "$10,000\nsince joining Centsible!",
+      title: "Edit your profile",
+      detail: "",
+      link: "/profile",
       isEarnings: true, // Special marker for the earnings card
     },
   ];

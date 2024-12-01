@@ -8,14 +8,13 @@ import { useNavigate } from "react-router-dom";
 const AddPurchase = () => {
   const navigate = useNavigate();
   const { currentUser } = useAuth();
-  const { addUncatSpending } = useFirestore();
+  const { addExpenses } = useFirestore();
 
   const [formData, setFormData] = useState({
     name: "",
     amount: "",
     merchant: "",
     category: "",
-    type: "voluntary",
     date: "",
   });
 
@@ -38,7 +37,7 @@ const AddPurchase = () => {
         date: formData.date,
       };
 
-      await addUncatSpending(currentUser.uid, expenseData);
+      await addExpenses(currentUser.uid, expenseData);
 
       // Clear form
       setFormData({
@@ -46,7 +45,6 @@ const AddPurchase = () => {
         amount: "",
         merchant: "",
         category: "",
-        type: "voluntary",
         date: "",
       });
 
@@ -145,21 +143,6 @@ const AddPurchase = () => {
                 }}
                 required
               />
-              <select
-                name="type"
-                value={formData.type}
-                onChange={handleInputChange}
-                style={{
-                  padding: "10px",
-                  borderRadius: "5px",
-                  border: "none",
-                  fontSize: "16px",
-                  outline: "none",
-                }}
-              >
-                <option value="voluntary">Voluntary</option>
-                <option value="necessary">Necessary</option>
-              </select>
               <input
                 type="date"
                 name="date"

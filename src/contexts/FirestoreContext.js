@@ -126,37 +126,7 @@ export const FirestoreProvider = ({ children }) => {
   };
 
   /**
-   * Append expense data to default expense document of user
-   * @param {String} id - User ID
-   * @param {*} expenseData - Expense data object
-   * expenseData = {
-   *  name: <Name of the expense>,
-   *  amount: <Cost of the expense>,
-   *  merchant: <Merchant name>,
-   *  category: <Category of the expense>,
-   *  date: <User set data of purchase>,
-   * }
-   */
-  const addUncatSpending = async (id, expenseData) => {
-    try {
-      await setDoc(
-        doc(db, "users", id, "expenses", "default"),
-        { expenses: arrayUnion(expenseData) },
-        { merge: true }
-      );
-    } catch (e) {
-      console.error("Error adding expense data: ", e);
-      throw e;
-    }
-  };
-
-  /*
-  Categorized spending, unclear on whether to use.
-    Categorizing spending data helps to split data between different docs and
-    avoid max size constraints on a document, but requires more complex handling
-  */
-  /**
-   * Append expense data to the corresponding expense document of user
+   * Append expense data to the expense document of user
    * @param {String} id - User ID
    * @param {*} expenseData - Object that stores each expense
    * expenseData = {
@@ -166,20 +136,11 @@ export const FirestoreProvider = ({ children }) => {
    *  category: <Category of the expense>,
    *  date: <User set data of purchase>,
    * }
-   * @param {String} type - Type of expense ["necessary", "voluntary"]
    * @returns
    */
-  const addExpenses = async (id, expenseData, type) => {
+  const addExpenses = async (id, expenseData) => {
     try {
-      let docRef;
-      if (type === "necessary")
-        docRef = doc(db, "users", id, "expenses", "necessary");
-      else if (type === "voluntary")
-        docRef = doc(db, "users", id, "expenses", "voluntary");
-      else {
-        console.error("No expense type specified");
-        return;
-      }
+      let docRef = doc(db, "users", id, "expenses", "expenses");
       await setDoc(
         docRef,
         { expenses: arrayUnion(expenseData) },
@@ -194,94 +155,32 @@ export const FirestoreProvider = ({ children }) => {
   /**
    * Gets expenses from document
    * @param {String} id - User ID
-   * @param {*} num - Number of expenses to return (default: 1, "all" returns all)
+   * @param {int} num - Number of expenses to return (default: 1, 0 returns all)
+   * @param {String} category - Category of expenses to return
    * @returns {Promise<Array | null>}
    */
-  const getUncatExpense = async (id, num = 1) => {
+  const getExpenses = async (id, num = 1, category = "") => {
     try {
       const document = await getDoc(
-        doc(db, "users", id, "expenses", "default")
+        doc(db, "users", id, "expenses", "expenses")
       );
       if (document.exists()) {
         const expensesArr = document.data().expenses;
 
-        if (num === "all") return expensesArr;
+        if (category) {
+          expensesArr = expensesArr.filter(
+            (expense) =>
+              expense.category.toLowerCase() === category.toLocaleLowerCase()
+          );
+        }
+
+        if (num === 0) return expensesArr;
 
         return expensesArr.slice(0, num);
       }
       return null;
     } catch (e) {
       console.error("Error getting expense: ", e);
-      throw e;
-    }
-  };
-
-  /**
-   * Gets the most recent expense data, BROKEN IMPLEMENTATION
-   * @param {String} id - User ID
-   * @param {String} type - Type of expense ["necessary", "voluntary"]
-   * @returns {Promise<Object | null>} - Most recent expense data or null if none found
-   * expenseData = {
-   *  name: <Name of the expense>,
-   *  amount: <Cost of the expense>,
-   *  merchant: <Merchant name>,
-   *  category: <Category of the expense>,
-   *  date: <User set data of purchase>,
-   * }
-   */
-  const getRecentExpense = async (id, type) => {
-    try {
-      // If a type is specified
-      if (type === "necessary" || type === "voluntary") {
-        const document = await getDoc(doc(db, "users", id, "expenses", type));
-
-        if (document.exists()) {
-          const expensesArr = document.data().expenses;
-          if (expensesArr && expensesArr.length > 0) {
-            return expensesArr[expensesArr.length - 1];
-          }
-        }
-        return null;
-      }
-
-      /**
-       * If a type is not specified, return the most recent entry
-       *  BROKEN & RETURNS NOTHING
-       */
-      const [necessaryDoc, voluntaryDoc] = await Promise.all([
-        getDoc(doc(db, "users", id, "expenses", "necessary")),
-        getDoc(doc(db, "users", id, "expenses", "voluntary")),
-      ]);
-
-      let mostRecentNecessary = null,
-        mostRecentVoluntary = null;
-
-      if (necessaryDoc.exists()) {
-        const necessaryExpensesArr = necessaryDoc.data().expenses;
-        if (necessaryExpensesArr && necessaryExpensesArr > 0)
-          mostRecentNecessary =
-            necessaryExpensesArr[necessaryExpensesArr.length - 1];
-      }
-
-      if (voluntaryDoc.exists()) {
-        const voluntaryExpensesArr = voluntaryDoc.data().expenses;
-        if (voluntaryExpensesArr && voluntaryExpensesArr > 0)
-          mostRecentVoluntary =
-            voluntaryExpensesArr[voluntaryExpensesArr.length - 1];
-      }
-
-      if (!mostRecentNecessary && !mostRecentVoluntary) return null;
-      else if (!mostRecentNecessary) return mostRecentVoluntary;
-      else if (!mostRecentVoluntary) return mostRecentNecessary;
-      else {
-        const d1 = new Date(mostRecentNecessary.date);
-        const d2 = new Date(mostRecentVoluntary.date);
-
-        if (d1 > d2) return mostRecentNecessary;
-        else return mostRecentVoluntary;
-      }
-    } catch (e) {
-      console.error("Error retrieving expense data: ", e);
       throw e;
     }
   };
@@ -341,10 +240,8 @@ export const FirestoreProvider = ({ children }) => {
     updateUser,
     addIncome,
     getIncome,
-    addUncatSpending,
     addExpenses,
-    getUncatExpense,
-    getRecentExpense,
+    getExpenses,
     getUserData,
     addUserGoal,
     getUserGoals,
