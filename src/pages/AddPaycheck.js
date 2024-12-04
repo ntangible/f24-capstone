@@ -1,68 +1,148 @@
 // src/pages/AddPaycheck.js
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import Sidebar from '../components/Sidebar';
-import '../styles/AddPaycheck.css';
+import { useState } from "react";
+import { Box } from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import { useFirestore } from "../contexts/FirestoreContext";
+import { useAuth } from "../contexts/AuthContext";
 
 const AddPaycheck = () => {
-    const navigate = useNavigate();
-    const [source, setSource] = useState('');
-    const [amount, setAmount] = useState('');
-    const [date, setDate] = useState('');
+  const navigate = useNavigate();
+  const { currentUser } = useAuth();
+  const { addIncome } = useFirestore();
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        const newPaycheck = { source, amount, date };
-        
-        // Navigate back to Paycheck.js and pass the newPaycheck data
-        navigate('/paycheck', { state: { newPaycheck } });
-    };
+  // In future add frequency of occurance
+  const [formData, setFormData] = useState({
+    source: "",
+    amount: "",
+    date: "",
+  });
 
-    return (
-        <div className="add-paycheck-page">
-            <Sidebar />
-            <div className="add-paycheck-container">
-                <div className="add-paycheck-form-wrapper">
-                    <h1 className="add-paycheck-heading">Add a New Paycheck</h1>
-                    <form onSubmit={handleSubmit} className="add-paycheck-form">
-                        <label className="add-paycheck-label">
-                            Source:
-                            <input
-                                type="text"
-                                value={source}
-                                onChange={(e) => setSource(e.target.value)}
-                                className="add-paycheck-input"
-                                placeholder="Paycheck Source"
-                                required
-                            />
-                        </label>
-                        <label className="add-paycheck-label">
-                            Amount:
-                            <input
-                                type="number"
-                                value={amount}
-                                onChange={(e) => setAmount(e.target.value)}
-                                className="add-paycheck-input"
-                                placeholder="Enter paycheck amount"
-                                required
-                            />
-                        </label>
-                        <label className="add-paycheck-label">
-                            Date:
-                            <input
-                                type="date"
-                                value={date}
-                                onChange={(e) => setDate(e.target.value)}
-                                className="add-paycheck-input"
-                                required
-                            />
-                        </label>
-                        <button type="submit" className="add-paycheck-button">Submit</button>
-                    </form>
-                </div>
-            </div>
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const incomeData = {
+        source: formData.source,
+        amount: Number(formData.amount),
+        date: formData.date,
+      };
+
+      console.log(incomeData);
+      await addIncome(currentUser.uid, incomeData);
+
+      setFormData({
+        source: "",
+        amount: "",
+        date: "",
+      });
+
+      navigate(-1);
+    } catch (e) {
+      console.error("Error adding income: ", e);
+    }
+  };
+
+  return (
+    <Box>
+      <div style={{ display: "flex" }}>
+        <div
+          style={{
+            flex: 1,
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "100vh",
+            backgroundColor: "#1a1c2c",
+            color: "#79c2c2",
+          }}
+        >
+          <div style={{ width: "320px", textAlign: "center" }}>
+            <h1
+              style={{
+                fontSize: "24px",
+                fontWeight: "bold",
+                marginBottom: "20px",
+              }}
+            >
+              Add a New Paycheck
+            </h1>
+            <form
+              style={{ display: "flex", flexDirection: "column", gap: "15px" }}
+              onSubmit={handleSubmit}
+            >
+              <input
+                type="text"
+                placeholder="Paycheck Source"
+                name="source"
+                value={formData.source}
+                onChange={handleInputChange}
+                style={{
+                  padding: "10px",
+                  borderRadius: "5px",
+                  border: "none",
+                  fontSize: "16px",
+                  outline: "none",
+                }}
+                required
+              />
+              <input
+                type="number"
+                placeholder="Amount"
+                name="amount"
+                value={formData.amount}
+                onChange={handleInputChange}
+                style={{
+                  padding: "10px",
+                  borderRadius: "5px",
+                  border: "none",
+                  fontSize: "16px",
+                  outline: "none",
+                }}
+                required
+              />
+              <input
+                type="date"
+                placeholder="Date Received"
+                name="date"
+                value={formData.date}
+                onChange={handleInputChange}
+                style={{
+                  padding: "10px",
+                  borderRadius: "5px",
+                  border: "none",
+                  fontSize: "16px",
+                  outline: "none",
+                }}
+                required
+              />
+              <button
+                type="submit"
+                style={{
+                  padding: "10px",
+                  borderRadius: "5px",
+                  border: "none",
+                  backgroundColor: "#4bb9b9",
+                  color: "white",
+                  fontSize: "16px",
+                  cursor: "pointer",
+                  fontWeight: "bold",
+                }}
+              >
+                Add Paycheck
+              </button>
+            </form>
+          </div>
         </div>
-    );
+      </div>
+    </Box>
+  );
 };
 
 export default AddPaycheck;

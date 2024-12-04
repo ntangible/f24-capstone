@@ -1,43 +1,85 @@
-// src/pages/Goals.js
-import React, { useState } from 'react';
-import Sidebar from '../components/Sidebar';
-import GoalsCard from '../components/GoalsCard';
-import AddGoal from './AddGoal';
-import '../styles/Goals.css';
+// src/pages/ViewGoals.js
+import React, { useEffect, useState } from "react";
+import { useFirestore } from "../contexts/FirestoreContext";
+import { useAuth } from "../contexts/AuthContext";
 
-const Goals = () => {
-    const [goals, setGoals] = useState([]);
-    const [showAddGoal, setShowAddGoal] = useState(false);
+const ViewGoals = () => {
+  const [goals, setGoals] = useState([]);
+  const { getUserGoals } = useFirestore();
+  const { currentUser } = useAuth();
 
-    // Function to add a new goal to the list
-    const addGoal = (newGoal) => {
-        setGoals([...goals, newGoal]);
-        setShowAddGoal(false); // Hide the form after adding the goal
+  useEffect(() => {
+    const fetchUserGoals = async () => {
+      if (currentUser) {
+        try {
+          const goalArr = await getUserGoals(currentUser.uid, "all");
+          if (goalArr) setGoals(goalArr);
+        } catch (e) {
+          // ADD AN ALERT TOAST
+          alert("Failed to fetch user goals");
+          console.log(e);
+        }
+      }
     };
+    fetchUserGoals();
+  }, [currentUser, getUserGoals]);
 
-    return (
-        <div className="goals-container">
-            <Sidebar />
-            <div className="goals-content">
-                <h1 className="goals-title">Your Goals</h1>
-                
-                {/* Show Add Goal button or AddGoal form conditionally */}
-                <div className="add-goal">
-                    {showAddGoal ? (
-                        <AddGoal addGoal={addGoal} />
-                    ) : (
-                        <GoalsCard name={"Add a goal"} onClick={() => setShowAddGoal(true)} />
-                    )}
+  const cardStyle = {
+    backgroundColor: "#FFFFFF",
+    padding: "20px",
+    borderRadius: "10px",
+    textAlign: "left",
+    fontWeight: "bold",
+    fontSize: "18px",
+    width: "250px",
+    height: "150px",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
+    margin: "10px",
+  };
+
+  return (
+    <div style={{ display: "flex", minHeight: "100%" }}>
+      <div style={{ flex: 1, padding: "20px", backgroundColor: "#1a1c2c" }}>
+        <h1
+          style={{
+            color: "#79c2c2",
+            fontSize: "24px",
+            fontWeight: "bold",
+            marginBottom: "20px",
+          }}
+        >
+          Your Goals
+        </h1>
+        <div style={{ display: "flex", flexWrap: "wrap" }}>
+          {goals.length !== 0 ? (
+            goals.map((goal, index) => (
+              <div key={index} style={cardStyle}>
+                {goal.name}
+                <div
+                  style={{
+                    fontWeight: "normal",
+                    fontSize: "16px",
+                    marginTop: "10px",
+                  }}
+                >
+                  Saved: {goal.saved}
+                  <br />
+                  Target: ${goal.amount}
+                  <br />
+                  Term: {goal.term}
                 </div>
-                
-                <div className="goals-list">
-                    {goals.map((goal, index) => (
-                        <GoalsCard key={index} name={goal.name} saved={goal.saved} target={goal.target} />
-                    ))}
-                </div>
-            </div>
+              </div>
+            ))
+          ) : (
+            <h2>You have no goals created yet</h2>
+          )}
         </div>
-    );
+      </div>
+    </div>
+  );
 };
 
-export default Goals;
+export default ViewGoals;
