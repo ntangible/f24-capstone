@@ -1,11 +1,16 @@
 {
-  "name": "centsible-app",
+  "name": "centsible",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@emotion/react": "^11.13.3",
+    "@emotion/styled": "^11.13.0",
+    "@mui/icons-material": "^6.1.6",
+    "@mui/material": "^6.1.6",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
+    "concurrently": "^9.0.1",
     "firebase": "^11.0.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
@@ -14,9 +19,11 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "concurrently npm:build npm:emulate",
+    "react": "react-scripts start",
+    "emulate": "firebase emulators:start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "dev": "concurrently npm:react \"firebase emulators:start --only auth,firestore\"",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
