@@ -10,6 +10,7 @@ import {
   DocumentSnapshot,
 } from "firebase/firestore";
 import { createContext, useContext } from "react";
+import { v1 as uuidv1 } from 'uuid';
 
 const FirestoreContext = createContext();
 
@@ -79,6 +80,7 @@ export const FirestoreProvider = ({ children }) => {
    * @param {String} id - User ID
    * @param {*} incomeData - Object that stores each income data
    * incomeData = {
+   *  id: <ID of data>,
    *  source: <Source of income>,
    *  amount: <Amount of income>,
    *  date: <Date added>,
@@ -88,6 +90,7 @@ export const FirestoreProvider = ({ children }) => {
    */
   const addIncome = async (id, incomeData) => {
     try {
+      incomeData.id = uuidv1();
       incomeData.active = true;
       await updateDoc(doc(db, "users", id), {
         income: arrayUnion(incomeData),
@@ -126,10 +129,36 @@ export const FirestoreProvider = ({ children }) => {
   };
 
   /**
+   * Update a single user income entry by locating it in user document, replacing it,
+   * and updating the entire array in user document.
+   * @param {String} userId - User ID
+   * @param {String} incomeId - UUID of income item
+   * @param {*} updatedIncome - Object that stores updated income data
+   */
+  const updateIncome = async (userId, incomeId, updatedIncome) => {
+    try {
+      const docRef = doc(db, "users", userId);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        const income = data.income;
+
+        const index = income.findIndex((arrItem) => arrItem.id === incomeId);
+        income[index] = {...income[index], ...updatedIncome};
+
+        await updateDoc(docRef, { income });
+      }
+    } catch (e) {
+      console.error("Error updating income: ", e);
+    }
+  };
+
+  /**
    * Append expense data to the expense document of user
    * @param {String} id - User ID
    * @param {*} expenseData - Object that stores each expense
    * expenseData = {
+   *  id: <ID of expense data>,
    *  name: <Name of the expense>,
    *  amount: <Cost of the expense>,
    *  merchant: <Merchant name>,
@@ -140,6 +169,7 @@ export const FirestoreProvider = ({ children }) => {
    */
   const addExpenses = async (id, expenseData) => {
     try {
+      expenseData.id = uuidv1();
       let docRef = doc(db, "users", id, "expenses", "expenses");
       await setDoc(
         docRef,
@@ -186,10 +216,35 @@ export const FirestoreProvider = ({ children }) => {
   };
 
   /**
+   * Update a single expense item by locating it in user expense document,
+   * replacing it, and then updating the document
+   * @param {String} userId - User ID
+   * @param {String} expenseId - UUID of expense item
+   * @param {*} updatedExpense - Object that stores data for updated expense
+   */
+  const updateExpense = async (userId, expenseId, updatedExpense) => {
+    try {
+      const docRef = doc(db, "users", userId, "expenses", "expenses");
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        const expensesArr = docSnap.data().expenses;
+
+        const index = expensesArr.findIndex((arrItem) => arrItem.id === expenseId);
+        expenseArr[index] = {...expensesArr[index], ...updatedExpense};
+
+        await updateDoc(docRef, {expensesArr});
+      }
+    } catch (e) {
+      console.error("Error updating expense data: ", e);
+    }
+  };
+
+  /**
    * Appends user goal to user document
    * @param {String} id - User ID
    * @param {*} userGoal
    * userGoal = {
+   *  id: <ID of user goal>,
    *  name: <Name of goal>,
    *  amount: <Amount to save for>,
    *  time: <Deadline for goal>,
@@ -198,6 +253,7 @@ export const FirestoreProvider = ({ children }) => {
    */
   const addUserGoal = async (id, userGoal) => {
     try {
+      userGoal.id = uuidv1();
       await updateDoc(doc(db, "users", id), {
         goals: arrayUnion(userGoal),
       });
@@ -235,16 +291,43 @@ export const FirestoreProvider = ({ children }) => {
     }
   };
 
+  /**
+   * Update a single user goal entry by locating it in user document, replacing it,
+   * and updating the entire array in document.
+   * @param {String} userId 
+   * @param {String} goalId 
+   * @param {*} updatedGoal 
+   */
+  const updateUserGoal = async (userId, goalId, updatedGoal) => {
+    try {
+      const docRef = doc(db, "users", id);
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+        const goalsArr = docSnap.data().goals;
+        const index = goalsArr.findIndex((arrItem) => arrItem.id === goalId);
+        goalsArr[index] = {...goalsArr[index], ...updatedGoal};
+
+        await updateDoc(docRef, { income });
+      }
+    } catch (e) {
+      console.error("Error editing user goal: ", e);
+    }
+  }
+
   const value = {
     createUser,
     updateUser,
     addIncome,
     getIncome,
+    updateIncome,
     addExpenses,
     getExpenses,
+    updateExpense,
     getUserData,
     addUserGoal,
     getUserGoals,
+    updateUserGoal,
   };
 
   return (
