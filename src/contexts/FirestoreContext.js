@@ -230,7 +230,7 @@ export const FirestoreProvider = ({ children }) => {
         const expensesArr = docSnap.data().expenses;
 
         const index = expensesArr.findIndex((arrItem) => arrItem.id === expenseId);
-        expenseArr[index] = {...expensesArr[index], ...updatedExpense};
+        expensesArr[index] = {...expensesArr[index], ...updatedExpense};
 
         await updateDoc(docRef, {expensesArr});
       }
@@ -300,7 +300,7 @@ export const FirestoreProvider = ({ children }) => {
    */
   const updateUserGoal = async (userId, goalId, updatedGoal) => {
     try {
-      const docRef = doc(db, "users", id);
+      const docRef = doc(db, "users", userId);
       const docSnap = await getDoc(docRef);
 
       if (docSnap.exists()) {
@@ -308,7 +308,7 @@ export const FirestoreProvider = ({ children }) => {
         const index = goalsArr.findIndex((arrItem) => arrItem.id === goalId);
         goalsArr[index] = {...goalsArr[index], ...updatedGoal};
 
-        await updateDoc(docRef, { income });
+        await updateDoc(docRef, { goalsArr });
       }
     } catch (e) {
       console.error("Error editing user goal: ", e);

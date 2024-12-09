@@ -34,7 +34,6 @@ const AddPaycheck = () => {
         date: formData.date,
       };
 
-      console.log(incomeData);
       await addIncome(currentUser.uid, incomeData);
 
       setFormData({

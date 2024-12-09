@@ -36,8 +36,6 @@ const AddGoal = () => {
         priority: formData.priority,
       };
 
-      console.log(goalData);
-
       await addUserGoal(currentUser.uid, goalData);
 
       setFormData({

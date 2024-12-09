@@ -70,6 +70,8 @@ const ViewGoals = () => {
                   Target: ${goal.amount}
                   <br />
                   Term: {goal.term}
+                  <br />
+                  Priority: {goal.priority}
                 </div>
               </div>
             ))
