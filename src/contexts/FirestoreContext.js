@@ -10,7 +10,7 @@ import {
   DocumentSnapshot,
 } from "firebase/firestore";
 import { createContext, useContext } from "react";
-import { v1 as uuidv1 } from 'uuid';
+import { v1 as uuidv1 } from "uuid";
 
 const FirestoreContext = createContext();
 
@@ -140,13 +140,14 @@ export const FirestoreProvider = ({ children }) => {
       const docRef = doc(db, "users", userId);
       const docSnap = await getDoc(docRef);
       if (docSnap.exists()) {
-        const data = docSnap.data();
-        const income = data.income;
+        const incomeData = docSnap.data().income;
 
-        const index = income.findIndex((arrItem) => arrItem.id === incomeId);
-        income[index] = {...income[index], ...updatedIncome};
+        const index = incomeData.findIndex(
+          (arrItem) => arrItem.id === incomeId
+        );
+        incomeData[index] = { ...incomeData[index], ...updatedIncome };
 
-        await updateDoc(docRef, { income });
+        await updateDoc(docRef, { income: incomeData });
       }
     } catch (e) {
       console.error("Error updating income: ", e);
@@ -229,10 +230,12 @@ export const FirestoreProvider = ({ children }) => {
       if (docSnap.exists()) {
         const expensesArr = docSnap.data().expenses;
 
-        const index = expensesArr.findIndex((arrItem) => arrItem.id === expenseId);
-        expensesArr[index] = {...expensesArr[index], ...updatedExpense};
+        const index = expensesArr.findIndex(
+          (arrItem) => arrItem.id === expenseId
+        );
+        expensesArr[index] = { ...expensesArr[index], ...updatedExpense };
 
-        await updateDoc(docRef, {expensesArr});
+        await updateDoc(docRef, { expenses: expensesArr });
       }
     } catch (e) {
       console.error("Error updating expense data: ", e);
@@ -267,7 +270,7 @@ export const FirestoreProvider = ({ children }) => {
    * Gets user goals from user doument
    * [Optional] Show highest priority goals first or just by order they are stored
    * @param {String} id - User ID
-   * @param {*} num - Number of user goals to return (default: 1, "all" returns all)
+   * @param {Number} num - Number of user goals to return (default: 1, 0 returns all)
    * @returns {Promise<Array | null>}
    */
   const getUserGoals = async (id, num = 1) => {
@@ -278,7 +281,7 @@ export const FirestoreProvider = ({ children }) => {
         const userData = docSnap.data();
         if (!userData.goals || userData.goals.length === 0) return null;
 
-        if (num === "all") return userData.goals;
+        if (num === 0) return userData.goals;
 
         return userData.goals.slice(0, num);
       } else {
@@ -294,9 +297,9 @@ export const FirestoreProvider = ({ children }) => {
   /**
    * Update a single user goal entry by locating it in user document, replacing it,
    * and updating the entire array in document.
-   * @param {String} userId 
-   * @param {String} goalId 
-   * @param {*} updatedGoal 
+   * @param {String} userId
+   * @param {String} goalId
+   * @param {*} updatedGoal
    */
   const updateUserGoal = async (userId, goalId, updatedGoal) => {
     try {
@@ -306,14 +309,14 @@ export const FirestoreProvider = ({ children }) => {
       if (docSnap.exists()) {
         const goalsArr = docSnap.data().goals;
         const index = goalsArr.findIndex((arrItem) => arrItem.id === goalId);
-        goalsArr[index] = {...goalsArr[index], ...updatedGoal};
+        goalsArr[index] = { ...goalsArr[index], ...updatedGoal };
 
-        await updateDoc(docRef, { goalsArr });
+        await updateDoc(docRef, { goals: goalsArr });
       }
     } catch (e) {
       console.error("Error editing user goal: ", e);
     }
-  }
+  };
 
   const value = {
     createUser,

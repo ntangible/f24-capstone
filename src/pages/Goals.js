@@ -2,42 +2,53 @@
 import React, { useEffect, useState } from "react";
 import { useFirestore } from "../contexts/FirestoreContext";
 import { useAuth } from "../contexts/AuthContext";
+import EditFormDialog from "../components/EditFormDialog";
+import { Paper } from "@mui/material";
 
 const ViewGoals = () => {
   const [goals, setGoals] = useState([]);
-  const { getUserGoals } = useFirestore();
+  const [selectedGoal, setSelectedGoal] = useState(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const { getUserGoals, updateUserGoal } = useFirestore();
   const { currentUser } = useAuth();
 
-  useEffect(() => {
-    const fetchUserGoals = async () => {
-      if (currentUser) {
-        try {
-          const goalArr = await getUserGoals(currentUser.uid, "all");
-          if (goalArr) setGoals(goalArr);
-        } catch (e) {
-          // ADD AN ALERT TOAST
-          alert("Failed to fetch user goals");
-          console.log(e);
-        }
+  const fetchUserGoals = async () => {
+    if (currentUser) {
+      try {
+        const goalArr = await getUserGoals(currentUser.uid, 0);
+        if (goalArr) setGoals(goalArr);
+      } catch (e) {
+        // ADD AN ALERT TOAST
+        alert("Failed to fetch user goals");
+        console.log(e);
       }
-    };
-    fetchUserGoals();
-  }, [currentUser, getUserGoals]);
+    }
+  };
 
-  const cardStyle = {
-    backgroundColor: "#FFFFFF",
-    padding: "20px",
-    borderRadius: "10px",
-    textAlign: "left",
-    fontWeight: "bold",
-    fontSize: "18px",
-    width: "250px",
-    height: "150px",
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "center",
-    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
-    margin: "10px",
+  useEffect(() => {
+    fetchUserGoals();
+  }, []);
+
+  const handleCardClick = (goal) => {
+    setSelectedGoal(goal);
+    setIsDialogOpen(true);
+  };
+
+  const handleDialogClose = () => {
+    setSelectedGoal(null);
+    setIsDialogOpen(false);
+  };
+
+  const handleDialogSubmit = async (updatedGoal) => {
+    try {
+      await updateUserGoal(currentUser.uid, updatedGoal.id, updatedGoal);
+
+      fetchUserGoals();
+    } catch (e) {
+      alert("Failed to update goal");
+      console.log(e);
+    }
+    handleDialogClose();
   };
 
   return (
@@ -55,8 +66,33 @@ const ViewGoals = () => {
         </h1>
         <div style={{ display: "flex", flexWrap: "wrap" }}>
           {goals.length !== 0 ? (
-            goals.map((goal, index) => (
-              <div key={index} style={cardStyle}>
+            goals.map((goal) => (
+              <Paper
+                key={goal.id}
+                elevation={3}
+                sx={{
+                  backgroundColor: "#f1ede3",
+                  color: "#003c40",
+                  padding: "20px",
+                  borderRadius: "10px",
+                  textAlign: "left",
+                  fontWeight: "bold",
+                  fontSize: "18px",
+                  width: "250px",
+                  height: "150px",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  margin: "10px",
+                  transition: "transform 0.2s, box-shadow 0.2s",
+                  "&:hover": {
+                    transform: "translateY(-5px)",
+                    boxShadow: "0 6px 12px rgba(0, 0, 0, 0.3)",
+                    cursor: "pointer",
+                  },
+                }}
+                onClick={() => handleCardClick(goal)}
+              >
                 {goal.name}
                 <div
                   style={{
@@ -73,13 +109,22 @@ const ViewGoals = () => {
                   <br />
                   Priority: {goal.priority}
                 </div>
-              </div>
+              </Paper>
             ))
           ) : (
-            <h2>You have no goals created yet</h2>
+            <h2 style={{ color: "#79c2c2" }}>You have no goals created yet</h2>
           )}
         </div>
       </div>
+
+      {selectedGoal && (
+        <EditFormDialog
+          open={isDialogOpen}
+          handleClose={handleDialogClose}
+          itemData={selectedGoal}
+          handleSubmit={handleDialogSubmit}
+        />
+      )}
     </div>
   );
 };

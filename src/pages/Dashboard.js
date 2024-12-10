@@ -23,7 +23,7 @@ const Dashboard = () => {
           const expense = await getExpenses(currentUser.uid);
           if (expense)
             setRecentPurchase(
-              `Last spent: $${expense.amount} for ${expense.name} on ${expense.date}.`
+              `Last spent: $${expense[0].amount} for ${expense[0].name} on ${expense[0].date}.`
             );
         } catch (e) {
           // ADD AN ALERT TOAST
