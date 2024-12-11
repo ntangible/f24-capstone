@@ -47,7 +47,7 @@ npm run build
 - [x] Add Purchase Page
 - [x] View Purchases Page (View only, no edits)
 - [x] Add Goal Page
-- [x] View Goals Page (View only, no edits)
+- [x] View Goals Page (Added editing)
 - [x] Track Spendings Page (View only, no edits)
 - [x] Add Paycheck Page
 - [ ] View Paycheck/Income Page
