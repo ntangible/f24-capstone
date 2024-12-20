@@ -3,7 +3,7 @@ Welcome to Centsible, The Planet Fitness of budgeting apps! Whether you're new t
 
 ## Features
 - Paycheck Tracking
-- Multi-Goal Tracking with budget allocation
+- Multi-Goal Tracking
 - Purchase Tracking
 - Spending Insights
 - Learning Mode
@@ -12,7 +12,7 @@ Welcome to Centsible, The Planet Fitness of budgeting apps! Whether you're new t
 Centsible users can input their paychecks and track how much they've made since joining. Users can also set aside money for savings, or for core expenses like rent, electricity, etc.
 
 ## Multi-Goal Tracking 
-You can set both long-term and short-term goals and tell Centsible to allocate percentages of your paycheck for said goals. The app will notify you how far along you are in reaching them.
+You can set both long-term and short-term goals.
 
 ## Purchase Tracking
 Centsible users can add recent purchases into the app and inform users how much they have spent since joining.
